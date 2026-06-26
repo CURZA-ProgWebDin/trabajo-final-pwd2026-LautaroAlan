@@ -1,0 +1,11 @@
+1- Decidi usar un Services por dominio (ej. productoService.js, usuarioService.js) en lugar de un único ApiService genérico fue mas que nada por la escalabilidad y mantenibilidad del código ya que cada servicio se encarga exclusivamente de las rutas, validaciones y transformaciones de datos de su propio dominio. Esto hace que un archivo central se convierta en un "archivo gigante" difícil de navegar y mas facil de comerte errores o equivocarse.
+Despues es que es mas facil que otros encuentren mas rapido dónde hacer cambios. Si el modelo de producto cambia solo se cambia productoService.js, sin riesgo de romper la lógica de otros archivos. Igualmente auque todos los servicios utilicen una instancia común de axios la lógica de negocio se mantiene separada.
+
+2-Decidi almacenarlo en un localStorage . Si un usuario edita manualmente el localStorage para cambiar su rol a "admin", no obtendrá acceso real. El frontend es solo visual . La seguridad real esta siempre en el backend. Cada petición sensible a la API debe incluir un Token (JWT) validado en el servidor. El backend es quien verifica el rol real del usuario en la base de datos y autoriza o rechaza la operación, ignorando cualquier modificación que el usuario haya hecho en su navegador.
+
+3-¿Por qué validamos el stock en el Frontend y en el Backend?
+Hacemos una "doble verificación":
+En la página (Frontend): Es para darle una respuesta rápida al usuario, avisarle si no hay stock y evitar que pierda tiempo enviando datos que sabemos que no van a funcionar.
+En el servidor (Backend): Es la que realmente importa. Es la "fuente de la verdad". El servidor es el que decide si la operación es válida o no. Esto es necesario porque el frontend se puede saltar o fallar, pero el backend siempre debe proteger los datos para que el inventario no se vuelva loco.
+
+4-Cuando desarrollamos, el navegador suele bloquear la comunicación entre nuestro sitio web y nuestro servidor porque están en puertos distintos, y el navegador piensa que es una "intrusión".Pero usamos el "proxy" de Vite. Básicamente, le decimos a Vite que haga de puente. Cuando nuestro sitio pide algo al servidor, Vite lo busca por nosotros y se lo entrega al navegador. Así, el navegador se queda tranquilo pensando que todo está en casa y no bloquea la conexión.
